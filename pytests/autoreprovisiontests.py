@@ -97,6 +97,7 @@ class AutoReprovisionBaseTest(unittest.TestCase):
         bucket_name = testcase.rest.get_buckets()[0].name
         while time.time() < time_max_end:
             num_nodes_with_warmup = 0
+            print("while!")
             for node in testcase.rest.get_bucket(bucket_name).nodes:
                 if node.status == 'warmup':
                     num_nodes_with_warmup += 1
@@ -376,11 +377,14 @@ class AutoReprovisionTests(unittest.TestCase):
     def test_node_memcached_failure(self):
         print("test start")
         timeout = self.timeout // 2
+        print("time")
+        print(timeout)
         status = self.rest.update_autoreprovision_settings(True, 1)
         if not status:
             self.fail('failed to change autoreprovision_settings!')
         self.sleep(5)
         self._pause_couchbase(self.server_fail)
+        print("server fail!")
         self.sleep(5)
         AutoReprovisionBaseTest.wait_for_warmup_or_assert(self.master, 1,
                                                           timeout + AutoReprovisionBaseTest.MAX_FAIL_DETECT_TIME,
