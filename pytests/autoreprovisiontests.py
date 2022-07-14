@@ -386,10 +386,10 @@ class AutoReprovisionTests(unittest.TestCase):
         self.sleep(5)
         self._pause_couchbase(self.server_fail)
         print("server fail!")
-        self.sleep(80)
-        # AutoReprovisionBaseTest.wait_for_warmup_or_assert(self.master, 1,
-        #                                                   timeout + AutoReprovisionBaseTest.MAX_FAIL_DETECT_TIME,
-        #                                                   self)
+        self.sleep(5)
+        AutoReprovisionBaseTest.wait_for_failover_or_assert(self.master, 1,
+                                                            timeout + AutoReprovisionBaseTest.MAX_FAIL_DETECT_TIME,
+                                                            self)
         print("warmup done !!")
         RemoteUtilHelper.common_basic_setup([self.server_fail])
         AutoReprovisionBaseTest.wait_for_failover_or_assert(self.master, 0,
