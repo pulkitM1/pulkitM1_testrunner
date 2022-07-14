@@ -150,7 +150,9 @@ class AutoReprovisionBaseTest(unittest.TestCase):
 
 class AutoReprovisionTests(unittest.TestCase):
     def setUp(self):
+        print("a")
         self.input = TestInputSingleton.input
+        print("b")
         self.case_number = self.input.param("case_number", 0)
         self.use_master = self.input.param("use_master", False)
         self.skip_services = self.input.param("skip_services", True)
@@ -161,8 +163,11 @@ class AutoReprovisionTests(unittest.TestCase):
         self.rest = RestConnection(self.master)
         self.timeout = 60
         self.loaded_items = dict()
+        print("c")
         AutoReprovisionBaseTest.common_setup(self.input, self)
+        print("d")
         self._cluster_setup()
+        print("e")
         if self.use_master:
             self.server_fail = self.servers[0]
             self.master = self.servers[1]
@@ -366,6 +371,7 @@ class AutoReprovisionTests(unittest.TestCase):
             self.verify_loaded_data(self.master, bucket.name, self.loaded_items[bucket.name])
 
     def test_node_memcached_failure(self):
+        print("test start")
         timeout = self.timeout // 2
         status = self.rest.update_autoreprovision_settings(True, 1)
         if not status:
