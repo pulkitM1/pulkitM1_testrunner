@@ -48,24 +48,24 @@ class AutoReprovisionBaseTest(unittest.TestCase):
 
     @staticmethod
     def common_tearDown(servers, testcase):
-        log.info("==============  common_tearDown was started for test #{0} {1} ==============" \
+        log.info("==============  common_tearDown was sta rted for test #{0} {1} ==============" \
                  .format(testcase.case_number, testcase._testMethodName))
-        RemoteUtilHelper.common_basic_setup(servers)
-
-        log.info("10 seconds delay to wait for couchbase-server to start")
-        time.sleep(10)
-        ClusterOperationHelper.wait_for_ns_servers_or_assert(servers, testcase, \
-                                                             wait_time=AutoReprovisionBaseTest.MAX_FAIL_DETECT_TIME * 10,
-                                                             wait_if_warmup=True)
-        try:
-            rest = RestConnection(servers[0])
-            buckets = rest.get_buckets()
-            for bucket in buckets:
-                MemcachedClientHelper.flush_bucket(servers[0], bucket.name)
-        except Exception:
-            pass
-        BucketOperationHelper.delete_all_buckets_or_assert(servers, testcase)
-        ClusterOperationHelper.cleanup_cluster(servers)
+        # RemoteUtilHelper.common_basic_setup(servers)
+        #
+        # log.info("10 seconds delay to wait for couchbase-server to start")
+        # time.sleep(10)
+        # ClusterOperationHelper.wait_for_ns_servers_or_assert(servers, testcase, \
+        #                                                      wait_time=AutoReprovisionBaseTest.MAX_FAIL_DETECT_TIME * 10,
+        #                                                      wait_if_warmup=True)
+        # try:
+        #     rest = RestConnection(servers[0])
+        #     buckets = rest.get_buckets()
+        #     for bucket in buckets:
+        #         MemcachedClientHelper.flush_bucket(servers[0], bucket.name)
+        # except Exception:
+        #     pass
+        # BucketOperationHelper.delete_all_buckets_or_assert(servers, testcase)
+        # ClusterOperationHelper.cleanup_cluster(servers)
         log.info("==============  common_tearDown was finished for test #{0} {1} ==============" \
                  .format(testcase.case_number, testcase._testMethodName))
 
@@ -99,6 +99,7 @@ class AutoReprovisionBaseTest(unittest.TestCase):
             num_nodes_with_warmup = 0
             print("while!")
             for node in testcase.rest.get_bucket(bucket_name).nodes:
+                print(node.status)
                 if node.status == 'warmup':
                     num_nodes_with_warmup += 1
             if num_nodes_with_warmup == warmup_count:
@@ -389,6 +390,7 @@ class AutoReprovisionTests(unittest.TestCase):
         AutoReprovisionBaseTest.wait_for_warmup_or_assert(self.master, 1,
                                                           timeout + AutoReprovisionBaseTest.MAX_FAIL_DETECT_TIME,
                                                           self)
+        print("warmup done !!")
         RemoteUtilHelper.common_basic_setup([self.server_fail])
         AutoReprovisionBaseTest.wait_for_failover_or_assert(self.master, 0,
                                                             timeout + AutoReprovisionBaseTest.MAX_FAIL_DETECT_TIME,
