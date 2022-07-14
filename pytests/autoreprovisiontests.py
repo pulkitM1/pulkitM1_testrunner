@@ -94,12 +94,11 @@ class AutoReprovisionBaseTest(unittest.TestCase):
     def wait_for_warmup_or_assert(master, warmup_count, timeout, testcase):
         time_start = time.time()
         time_max_end = time_start + timeout
-        bucket_name = testcase.rest.get_buckets()
+        bucket_name = testcase.rest.get_buckets()[0].name
         while time.time() < time_max_end:
             num_nodes_with_warmup = 0
             print("while!")
-            for node in bucket_name:
-                print(node)
+            for node in testcase.rest.get_bucket(bucket_name).nodes:
                 print(node.status)
                 if node.status == 'warmup':
                     num_nodes_with_warmup += 1
@@ -387,13 +386,12 @@ class AutoReprovisionTests(unittest.TestCase):
         self.sleep(5)
         self._pause_couchbase(self.server_fail)
         print("server fail!")
-        self.sleep(5)
+        self.sleep(80)
+        # AutoReprovisionBaseTest.wait_for_warmup_or_assert(self.master, 1,
+        #                                                   timeout + AutoReprovisionBaseTest.MAX_FAIL_DETECT_TIME,
+        #                                                   self)
         print("warmup done !!")
         RemoteUtilHelper.common_basic_setup([self.server_fail])
-        print("setup done !!")
-        AutoReprovisionBaseTest.wait_for_warmup_or_assert(self.master, 1,
-                                                          timeout + AutoReprovisionBaseTest.MAX_FAIL_DETECT_TIME,
-                                                          self)
         AutoReprovisionBaseTest.wait_for_failover_or_assert(self.master, 0,
                                                             timeout + AutoReprovisionBaseTest.MAX_FAIL_DETECT_TIME,
                                                             self)
