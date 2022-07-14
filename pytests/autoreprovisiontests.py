@@ -180,6 +180,9 @@ class AutoReprovisionTests(unittest.TestCase):
     def tearDown(self):
         AutoReprovisionBaseTest.common_tearDown(self.servers, self)
 
+    def suite_setUp(self):
+        pass
+
     def sleep(self, timeout=1, message=""):
         self.log.info("sleep for {0} secs. {1} ...".format(timeout, message))
         time.sleep(timeout)
